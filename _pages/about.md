@@ -29,7 +29,7 @@ latest_posts:
 
 <!-- TODO paragraph 1: who you are now, and your research focus. The underlined sentence is your research vision. -->
 
-I am a PhD student at the University of Edinburgh, in the UKRI AI Centre for Doctoral Training in Dependable and Deployable AI for Robotics (<a href="https://www.cdt-d2air.uk/).
+I am a PhD student at the University of Edinburgh, in the UKRI AI Centre for Doctoral Training in Dependable and Deployable AI for Robotics (<a href="https://www.cdt-d2air.uk/" target="_blank" rel="noopener">CDT-D2AIR</a>).
 My research focuses on building robots that can adapt to the physical world.
 I am broadly interested in embodied AI, robot foundation models, and robot manipulation.
 
