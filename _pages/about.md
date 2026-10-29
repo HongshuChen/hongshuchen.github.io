@@ -10,7 +10,7 @@ profile:
   image_circular: false # crops the image to make it circular
   social: true # icon row under the photo, edit _data/socials.yml
   more_info: >
-    <p>Email: [name] [at] [domain]</p>
+    <p>Email: hongshu.chen@ed.ac.uk</p>
 
 selected_papers: true # includes a list of papers marked as "selected={true}"
 academic_service: true # includes the list in _data/academic_service.yml
