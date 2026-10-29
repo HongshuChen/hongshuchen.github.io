@@ -1,0 +1,28 @@
+# Badge colour for each venue abbreviation (the `abbr` field of a bib entry).
+# A year suffix is ignored when looking up the colour, so "CoRL'26" uses the entry for "CoRL".
+# Venues that are not listed use the theme colour (blue), e.g. CVPR, ICCV, NeurIPS, ICLR.
+
+"Preprint":
+  color: "#673ab7"
+
+journals: &journal
+  color: "darkcyan"
+
+robots: &robot
+  color: "#00369f"
+
+"Journal": *journal # used by the placeholder paper in papers.bib; delete once it is replaced
+TPAMI: *journal
+IJCV: *journal
+TIP: *journal
+TMLR: *journal
+JMLR: *journal
+NMI: *journal
+IJRR: *journal
+T-RO: *journal
+
+RA-L: *robot
+RSS: *robot
+ICRA: *robot
+IROS: *robot
+CoRL: *robot

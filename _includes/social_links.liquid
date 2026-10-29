@@ -1,0 +1,13 @@
+{%- comment -%}
+  Renders the icons from _data/socials.yml with readable tooltips
+  (jekyll-socials titles them after the YAML key, e.g. "Scholar userid").
+{%- endcomment -%}
+{%- capture social_links_html -%}{% social_links %}{%- endcapture -%}
+{{-
+  social_links_html
+  | replace: "title='Scholar userid'", "title='Google Scholar'"
+  | replace: "title='Linkedin username'", "title='LinkedIn'"
+  | replace: "title='Github username'", "title='GitHub'"
+  | replace: "title='Orcid id'", "title='ORCID'"
+  | replace: "title='X username'", "title='X'"
+-}}

@@ -1,0 +1,10 @@
+# "Academic Service" list on the homepage (hide it with `academic_service: false` in _pages/about.md).
+# Each item renders as "<role>: <venues joined by commas>".
+- role: Conference Reviewer
+  venues:
+    - "[Conference A]"
+    - "[Conference B], etc."
+
+- role: Journal Reviewer
+  venues:
+    - "[Journal A], etc."

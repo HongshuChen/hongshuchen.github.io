@@ -1,0 +1,76 @@
+{% comment %}
+  "🌍 Visitor Map" toggle shown above the footer (included from _includes/footer.liquid).
+  The globe is the free MapMyVisitors widget: register your site at https://mapmyvisitors.com,
+  then copy the value after `d=` in its embed code into `visitor_map.mapmyvisitors_id` in _config.yml.
+{% endcomment %}
+<section class="visitor-section" aria-label="Visitor locations">
+  <button class="visitor-button" id="visitor-toggle" type="button" aria-controls="visitor-panel" aria-expanded="false">🌍 Visitor Map</button>
+  <div class="visitor-panel" id="visitor-panel">
+    <div class="visitor-globe">
+      <script type="text/javascript" id="mmvst_globe" src="https://mapmyvisitors.com/globe.js?d={{ site.visitor_map.mapmyvisitors_id }}"></script>
+    </div>
+  </div>
+</section>
+<style>
+  .visitor-section {
+    margin: 2.5rem auto 0;
+    max-width: 440px;
+    padding: 0 1rem;
+    text-align: center;
+    color: var(--global-text-color);
+  }
+  .visitor-button {
+    background: transparent;
+    border: 1px solid var(--global-divider-color);
+    border-radius: 999px;
+    color: inherit;
+    cursor: pointer;
+    font: inherit;
+    font-size: 0.9rem;
+    line-height: 1.5;
+    padding: 0.5rem 1rem;
+  }
+  .visitor-button:hover {
+    border-color: var(--global-theme-color);
+    color: var(--global-theme-color);
+  }
+  .visitor-button:focus-visible {
+    outline: 2px solid var(--global-theme-color);
+    outline-offset: 4px;
+  }
+  /* Collapsed with max-height instead of display: none, so the globe can measure its width while closed. */
+  .visitor-panel {
+    max-height: 0;
+    overflow: hidden;
+    visibility: hidden;
+  }
+  .visitor-panel.is-open {
+    max-height: 40rem;
+    padding-top: 1rem;
+    visibility: visible;
+  }
+  /* The widget sizes itself to its parent's width. */
+  .visitor-globe {
+    width: 280px;
+    max-width: 100%;
+    margin: 0 auto;
+  }
+</style>
+<script>
+  (() => {
+    const toggle = document.getElementById('visitor-toggle');
+    const panel = document.getElementById('visitor-panel');
+    if (!toggle || !panel) return;
+
+    toggle.addEventListener('click', () => {
+      const open = panel.classList.toggle('is-open');
+      toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+      if (!open) return;
+
+      // The globe widget only starts drawing once a scroll event finds it fully in view.
+      const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      panel.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'center' });
+      window.dispatchEvent(new Event('scroll'));
+    });
+  })();
+</script>

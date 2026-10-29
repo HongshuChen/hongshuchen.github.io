@@ -1,0 +1,52 @@
+---
+version: 1
+overrides:
+  _includes/footer.liquid:
+    owner: al_folio_core
+    gem_version: 1.0.15
+    upstream_path: _includes/footer.liquid
+    upstream_sha256: 65219faad5445eb4456649d77921acd07845875bbcad4fb8f33b12b3d52d96d2
+    local_sha256: 785e7175937be39d6b3c37829f3be9c99a6ef3bf382dabf3f15085df197d0126
+    acknowledged_at: "2026-10-27"
+  _includes/header.liquid:
+    owner: al_folio_core
+    gem_version: 1.0.15
+    upstream_path: _includes/header.liquid
+    upstream_sha256: c8663513baded68d9fa5fbe4d6363a976535bbe201efe5138243d0ff03101058
+    local_sha256: fa60529ab7513a0d1398a27a2c3f84491e306754992053fc69a278be2f7293c5
+    acknowledged_at: "2026-10-27"
+  _includes/news.liquid:
+    owner: al_folio_core
+    gem_version: 1.0.15
+    upstream_path: _includes/news.liquid
+    upstream_sha256: 2a37611539b5b3d59050cc20b8d008ca070e253d953724f6499a422e9b186f63
+    local_sha256: 8ac566ef03508ed8f35426694d3a0bb54502fede85779f7196c61f090168732b
+    acknowledged_at: "2026-10-27"
+  _layouts/about.liquid:
+    owner: al_folio_core
+    gem_version: 1.0.15
+    upstream_path: _layouts/about.liquid
+    upstream_sha256: 2c28eb83b71fe65f252202c11f0b4a19a9b6f1faccdc870b4f91c4ea51d0c6f1
+    local_sha256: 653fd0239f322e5b0a460c13abc9ed2d38d621614a982a0fc495875d9b9b1927
+    acknowledged_at: "2026-10-27"
+  _layouts/bib.liquid:
+    owner: al_folio_core
+    gem_version: 1.0.15
+    upstream_path: _layouts/bib.liquid
+    upstream_sha256: f3c547969ef76219ca1eb21df09dce5a3daf32a1f491b1586f68e3213fa35f53
+    local_sha256: 0346b0556be8cbbb8a9f05b7cbc292ba053663442a14830054e323c71b24b194
+    acknowledged_at: "2026-10-28"
+  _sass/_publications.scss:
+    owner: al_folio_core
+    gem_version: 1.0.15
+    upstream_path: _sass/_publications.scss
+    upstream_sha256: 9428fe340164ef3eb417b31e9858194ada02a4e5afe35da1cd980545bf2452df
+    local_sha256: 86ead495a40c07ea92cd8493c36ee3da960626777d7477aecefcbb1558288f7e
+    acknowledged_at: "2026-10-28"
+  _sass/_themes.scss:
+    owner: al_folio_core
+    gem_version: 1.0.15
+    upstream_path: _sass/_themes.scss
+    upstream_sha256: b581e43dcfbf21c14f388e2b585474c886fad62f6b5a0444f7832e7f69745f1f
+    local_sha256: 57dff86110cfeba13f6fb880fcc9d39802be512147f4ebafe8b1ce85714b4ab1
+    acknowledged_at: "2026-10-27"

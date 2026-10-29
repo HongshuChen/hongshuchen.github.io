@@ -1,0 +1,523 @@
+---
+layout: default
+---
+{% comment %}
+  Homepage layout. Overrides al_folio_core's _layouts/about.liquid: hero with a
+  floating profile card, News, filterable Selected Publications, and Academic Service.
+{% endcomment %}
+<div class="post">
+  <article>
+    <section id="home-about" class="about-hero">
+      <div class="about-hero-body">
+        <header class="post-header">
+          <h1 class="post-title">
+            {% if site.title == 'blank' %}
+              <span class="font-weight-bold">
+                {{ site.first_name }}
+                {% if site.middle_name %} {{ site.middle_name }}{% endif %}
+                {{ site.last_name }}
+              </span>
+            {% else %}
+              <span class="font-weight-bold">{{ site.title }}</span>
+            {% endif %}
+          </h1>
+          <p class="desc">{{ page.subtitle }}</p>
+        </header>
+
+        {% if page.profile %}
+          <div class="profile about-hero-profile profile-{{ page.profile.align | default: 'right' }}">
+            {% if page.profile.image %}
+              {% assign profile_image_path = page.profile.image | prepend: 'assets/img/' %}
+              {% if page.profile.image_circular %}
+                {% assign profile_image_class = 'img-fluid z-depth-1 rounded-circle' %}
+              {% else %}
+                {% assign profile_image_class = 'img-fluid z-depth-1 rounded' %}
+              {% endif %}
+              {% capture sizes %}(min-width: {{ site.max_width }}) 210px, (min-width: 576px) 28vw, 70vw{% endcapture %}
+              {%
+                include figure.liquid loading="eager" path=profile_image_path class=profile_image_class sizes=sizes alt=page.profile.image
+                cache_bust=true
+              %}
+            {% endif %}
+            {% if page.profile.more_info %}
+              <div class="more-info">{{ page.profile.more_info }}</div>
+            {% endif %}
+            {% unless page.profile.social == false %}
+              <div class="profile-social">
+                <div class="contact-icons">{% include social_links.liquid %}</div>
+              </div>
+            {% endunless %}
+          </div>
+        {% endif %}
+
+        <div class="clearfix">{{ content }}</div>
+      </div>
+    </section>
+
+    <!-- News -->
+    {% if page.announcements and page.announcements.enabled %}
+      <hr>
+      <br>
+      <h2 id="home-news" class="home-section-title">News</h2>
+      {% include news.liquid limit=true %}
+    {% endif %}
+
+    <!-- Latest posts -->
+    {% if page.latest_posts and page.latest_posts.enabled %}
+      <hr>
+      <br>
+      <h2 class="home-section-title">
+        <a href="{{ '/blog/' | relative_url }}" style="color: inherit">Latest Posts</a>
+      </h2>
+      {% include latest_posts.liquid %}
+    {% endif %}
+
+    <!-- Selected papers -->
+    {% if page.selected_papers %}
+      <hr>
+      <br>
+      <h2 id="home-selected-publications" class="home-section-title">Selected Publications</h2>
+      <div class="selected-publications">
+        {% capture selected_papers_html %}{% include selected_papers.liquid %}{% endcapture %}
+        {% assign selected_papers_state = selected_papers_html | selected_publications_initial_state: site.data.selected_publication_tags.papers %}
+        <p class="selected-publication-note">
+          <span class="selected-publication-note-item">
+            <strong>*/†</strong>
+            indicates equal contribution/advising
+          </span>
+          {% if site.data.socials.scholar_userid %}
+            <span class="selected-publication-note-divider" aria-hidden="true"></span>
+            <span class="selected-publication-note-item">
+              Full publication list on
+              <a href="https://scholar.google.com/citations?user={{ site.data.socials.scholar_userid }}" target="_blank" rel="noopener noreferrer">
+                Google Scholar <span aria-hidden="true">↗</span>
+              </a>
+            </span>
+          {% endif %}
+        </p>
+        {% if site.data.selected_publication_tags.filters.size > 0 %}
+          <div class="selected-publication-filters" role="group" aria-label="Filter selected publications by research topic">
+            <button class="selected-publication-filter is-active" type="button" data-publication-filter="all" aria-pressed="true">Featured</button>
+            {% for filter in site.data.selected_publication_tags.filters %}
+              <button class="selected-publication-filter" type="button" data-publication-filter="{{ filter.id }}" aria-pressed="false">
+                {{ filter.label }}
+              </button>
+            {% endfor %}
+          </div>
+          <p class="selected-publication-filter-status" aria-live="polite">
+            Showing {{ selected_papers_state.visible_count }}
+            {% if selected_papers_state.visible_count == 1 %}publication{% else %}publications{% endif %}
+          </p>
+        {% endif %}
+        <div class="selected-publication-list">{{ selected_papers_state.html }}</div>
+      </div>
+    {% endif %}
+
+    <!-- Academic service -->
+    {% if page.academic_service and site.data.academic_service.size > 0 %}
+      <hr>
+      <br>
+      <section aria-labelledby="home-academic-service">
+        <h2 id="home-academic-service" class="home-section-title">Academic Service</h2>
+        <ul class="academic-service-list">
+          {% for service in site.data.academic_service %}
+            <li>
+              <strong>
+                {{- service.role -}}
+                {%- if service.venues.size > 0 -%}:{%- endif -%}
+              </strong>
+              {{ service.venues | join: ', ' | escape }}
+            </li>
+          {% endfor %}
+        </ul>
+      </section>
+    {% endif %}
+
+    <!-- Social -->
+    {% if page.social %}
+      <div class="social">
+        <div class="contact-icons">{% include social_links.liquid %}</div>
+
+        <div class="contact-note">{{ site.contact_note }}</div>
+      </div>
+    {% endif %}
+
+    {% if site.newsletter and site.newsletter.enabled and site.footer_fixed %}
+      {% include newsletter.liquid center=true %}
+    {% endif %}
+    <style>
+      .about-hero {
+        margin: 2.3rem 0 0rem;
+      }
+      .about-hero-profile {
+        width: 210px;
+        text-align: center;
+      }
+      .about-hero-profile.profile-right {
+        float: right;
+        margin: 0.35rem 0 1rem 2rem;
+      }
+      .about-hero-profile.profile-left {
+        float: left;
+        margin: 0.35rem 2rem 1rem 0;
+      }
+      .about-hero-profile figure {
+        margin-bottom: 0;
+      }
+      .about-hero-profile img {
+        width: 100%;
+      }
+      .about-hero-profile img.rounded {
+        border-radius: 12px;
+      }
+      .about-hero-profile .more-info p {
+        font-size: 0.75rem !important;
+        color: var(--global-text-color-light);
+      }
+      .about-hero .post-header {
+        margin-bottom: 0.75rem;
+      }
+      .about-hero .post-title {
+        margin-bottom: 0.2rem;
+        font-size: 2.45rem;
+        font-weight: 800;
+        line-height: 1.08;
+      }
+      .about-hero .desc {
+        margin-bottom: 0rem;
+        color: var(--global-text-color);
+        font-weight: 400;
+      }
+      .about-hero-body p {
+        font-size: 1.02rem;
+        line-height: 1.68;
+      }
+      .profile-social {
+        margin: 0.65rem 0 0.35rem;
+      }
+      .profile-social .contact-icons {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 0.3rem;
+        line-height: 1;
+      }
+      .profile-social .contact-icons a {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 2.35rem;
+        height: 2.35rem;
+        border: 1px solid #dbe3ef;
+        border-radius: 8px;
+        background: #fff;
+        color: #475569;
+        font-size: 1.05rem;
+        box-shadow: 0 1px 2px rgba(15, 23, 42, 0.03);
+        text-decoration: none;
+        transition:
+          color 150ms ease,
+          border-color 150ms ease,
+          background 150ms ease,
+          box-shadow 150ms ease,
+          transform 150ms ease;
+      }
+      .profile-social .contact-icons a[href^="https://scholar.google.com/"] {
+        --social-brand-color: #4285f4;
+      }
+      .profile-social .contact-icons a[href^="https://www.xiaohongshu.com/"] {
+        --social-brand-color: #ff2442;
+      }
+      .profile-social .contact-icons a[href^="https://www.linkedin.com/"] {
+        --social-brand-color: #0a66c2;
+      }
+      .profile-social .contact-icons img {
+        width: 1.5rem;
+        height: 1.5rem;
+        object-fit: contain;
+        filter: grayscale(1);
+        transition: filter 150ms ease;
+      }
+      .profile-social .contact-icons a:hover img {
+        filter: none;
+      }
+      .contact-icons .social-icon-xiaohongshu {
+        display: inline-block;
+        width: 1.6rem;
+        height: 1.6rem;
+        background-color: currentColor;
+        -webkit-mask: url("{{ '/assets/img/xiaohongshu.svg' | relative_url }}") center / contain no-repeat;
+        mask: url("{{ '/assets/img/xiaohongshu.svg' | relative_url }}") center / contain no-repeat;
+      }
+      .profile-social .contact-icons a:hover {
+        border-color: #2563eb;
+        background: #eff6ff;
+        color: var(--social-brand-color, #2563eb);
+        text-decoration: none;
+        box-shadow: 0 8px 18px rgba(37, 99, 235, 0.12);
+        transform: translateY(-2px);
+      }
+      .profile-social .contact-icons a:focus-visible {
+        text-decoration: none;
+        transform: translateY(0);
+      }
+      .profile-social .contact-icons a:active {
+        text-decoration: none;
+        transform: translateY(0);
+      }
+      .social .contact-icons a {
+        display: inline-flex;
+        text-decoration: none;
+        transition:
+          color 150ms ease,
+          transform 150ms ease;
+      }
+      .social .contact-icons a:hover {
+        transform: translateY(-2px);
+      }
+      .social .contact-icons a:focus-visible {
+        text-decoration: none;
+        transform: translateY(0);
+      }
+      .home-section-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+      }
+      .academic-service-list {
+        margin: 0.6rem 0 1rem;
+        padding-left: 1.2rem;
+        line-height: 1.65;
+      }
+      .academic-service-list li + li {
+        margin-top: 0.3rem;
+      }
+      .selected-publication-list .bibliography > li[hidden] {
+        display: none !important;
+      }
+      .selected-publication-note {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 0.4rem 0.7rem;
+        width: fit-content;
+        margin: 0.55rem 0 0.9rem;
+        color: var(--global-text-color-light);
+        font-size: 0.85rem;
+        line-height: 1.4;
+      }
+      .selected-publication-note-item {
+        display: inline-flex;
+        align-items: baseline;
+        gap: 0.25rem;
+      }
+      .selected-publication-note strong,
+      .selected-publication-note a {
+        color: var(--global-theme-color);
+        font-weight: 600;
+      }
+      .selected-publication-note a:hover {
+        text-decoration: underline;
+      }
+      .selected-publication-note-divider {
+        width: 1px;
+        height: 1rem;
+        background: var(--global-divider-color);
+      }
+      .selected-publication-filters {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        margin: 0.85rem 0 0.45rem;
+      }
+      .selected-publication-filter {
+        padding: 0.38rem 0.75rem;
+        border: 1px solid var(--global-divider-color);
+        border-radius: 999px;
+        background: var(--global-bg-color);
+        color: var(--global-text-color);
+        font-size: 0.82rem;
+        font-weight: 500;
+        line-height: 1.25;
+        cursor: pointer;
+        transition:
+          color 150ms ease,
+          border-color 150ms ease,
+          background 150ms ease,
+          transform 150ms ease;
+      }
+      .selected-publication-filter:hover {
+        border-color: var(--global-theme-color);
+        color: var(--global-theme-color);
+        transform: translateY(-1px);
+      }
+      .selected-publication-filter:focus-visible {
+        outline: 2px solid var(--global-theme-color);
+        outline-offset: 2px;
+      }
+      .selected-publication-filter.is-active {
+        border-color: var(--global-theme-color);
+        background: var(--global-theme-color);
+        color: var(--global-bg-color);
+      }
+      .selected-publication-filter-status {
+        margin: 0 0 0.65rem;
+        color: var(--global-text-color-light);
+        font-size: 0.78rem;
+      }
+      .research-note {
+        margin: 0 0 1rem;
+        padding: 0.05rem 0 0.05rem 1rem;
+        border-left: 3px solid var(--global-theme-color);
+      }
+      .research-note p {
+        margin-bottom: 0rem;
+      }
+      .research-note ul {
+        margin-bottom: 0;
+      }
+      .research-note li {
+        margin-bottom: 0.2rem;
+      }
+      .highlight {
+        margin: 0 0 1.25rem;
+        padding: 0.75rem 1.25rem;
+        border-left: 3px solid #0069d1;
+        border-radius: 6px;
+        background: rgba(248, 250, 252, 0.8);
+        box-shadow: 0 4px 14px rgba(15, 23, 42, 0.025);
+        color: var(--global-text-color);
+      }
+      .highlight p {
+        margin: 0;
+        font-size: 1rem;
+        line-height: 1.65;
+      }
+      .highlight p + p {
+        margin-top: 0.55rem;
+      }
+      .highlight p strong {
+        color: var(--global-text-color);
+        font-weight: 500;
+      }
+      html[data-theme="dark"] .profile-social .contact-icons a {
+        border-color: rgba(255, 255, 255, 0.14);
+        background: rgba(255, 255, 255, 0.05);
+        color: var(--global-text-color);
+        box-shadow: none;
+      }
+      html[data-theme="dark"] .profile-social .contact-icons img {
+        filter: grayscale(1) brightness(2.5);
+      }
+      html[data-theme="dark"] .profile-social .contact-icons a:hover img {
+        filter: none;
+      }
+      html[data-theme="dark"] .profile-social .contact-icons a:hover {
+        border-color: #38bdf8;
+        background: rgba(56, 189, 248, 0.12);
+        color: var(--social-brand-color, #38bdf8);
+        box-shadow: 0 8px 18px rgba(56, 189, 248, 0.12);
+      }
+      html[data-theme="dark"] .highlight {
+        border-left-color: #38bdf8;
+        background: rgba(255, 255, 255, 0.06);
+        color: var(--global-text-color);
+        box-shadow: none;
+      }
+      html[data-theme="dark"] .highlight p strong {
+        color: var(--global-text-color);
+      }
+      @media (max-width: 767px) {
+        .about-hero .post-title {
+          font-size: 2rem;
+        }
+      }
+      @media (max-width: 575px) {
+        .selected-publication-note {
+          align-items: flex-start;
+        }
+        .selected-publication-note-divider {
+          display: none;
+        }
+        .about-hero {
+          margin-top: 1.2rem;
+        }
+        .about-hero-profile,
+        .about-hero-profile.profile-right,
+        .about-hero-profile.profile-left {
+          float: none;
+          width: 100%;
+          margin: 0 0 1.25rem;
+        }
+        .about-hero .post-header {
+          text-align: center;
+        }
+        .highlight {
+          padding: 0.9rem 1rem;
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .profile-social .contact-icons a,
+        .profile-social .contact-icons img,
+        .social .contact-icons a,
+        .selected-publication-filter {
+          transition: none;
+        }
+        .profile-social .contact-icons a:hover,
+        .profile-social .contact-icons a:active,
+        .social .contact-icons a:hover,
+        .selected-publication-filter:hover {
+          transform: none;
+        }
+      }
+      .news table th {
+        font-weight: bolder;
+      }
+    </style>
+    {% if page.selected_papers %}
+      <script>
+        (() => {
+          const initSelectedPublicationFilters = () => {
+            const section = document.querySelector('.selected-publications');
+            if (!section || section.dataset.filtersReady) return;
+
+            const buttons = [...section.querySelectorAll('[data-publication-filter]')];
+            const items = [...section.querySelectorAll('.bibliography > li')];
+            const status = section.querySelector('.selected-publication-filter-status');
+
+            section.dataset.filtersReady = 'true';
+
+            const applyFilter = (filter) => {
+              let visibleCount = 0;
+
+              items.forEach((item) => {
+                const tags = item.dataset.publicationTags.split(' ').filter(Boolean);
+                const visible = filter === 'all' ? item.dataset.showInAll !== 'false' : tags.includes(filter);
+                item.hidden = !visible;
+                if (visible) visibleCount += 1;
+              });
+
+              buttons.forEach((button) => {
+                const active = button.dataset.publicationFilter === filter;
+                button.classList.toggle('is-active', active);
+                button.setAttribute('aria-pressed', active ? 'true' : 'false');
+              });
+
+              if (status) status.textContent = `Showing ${visibleCount} ${visibleCount === 1 ? 'publication' : 'publications'}`;
+            };
+
+            buttons.forEach((button) => {
+              button.addEventListener('click', () => applyFilter(button.dataset.publicationFilter));
+            });
+          };
+
+          if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initSelectedPublicationFilters);
+          } else {
+            initSelectedPublicationFilters();
+          }
+        })();
+      </script>
+    {% endif %}
+  </article>
+</div>

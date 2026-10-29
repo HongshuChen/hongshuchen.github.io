@@ -1,0 +1,16 @@
+# this file contains the social media links and usernames of the author
+# the socials will be displayed in the order they are defined here
+# for more information, please refer to the documentation of jekyll-socials plugin: https://github.com/george-gca/jekyll-socials
+# On the homepage they form the icon row under the profile photo.
+scholar_userid: ddf92H8AAAAJ # the `user=` value in your Google Scholar profile URL
+linkedin_username: hongshu-chen-513886376 # your LinkedIn user name
+# github_username: HongshuChen # your GitHub user name
+# orcid_id: # your ORCID ID
+# x_username: # your X handle
+# email: # your email address (the homepage already shows it as text under the photo)
+# cv_pdf: /assets/pdf/cv.pdf # path to your CV PDF file
+# wechat_qr: # filename of your wechat qr-code saved as an image (e.g., wechat-qr.png if saved to assets/img/wechat-qr.png)
+# custom_social: # can be any name here other than the ones already defined in the jekyll-socials plugin, e.g. a lab page
+#   logo: /assets/img/lab-logo.png # can be png, svg, jpg
+#   title: Lab Page
+#   url: https://example.com/
