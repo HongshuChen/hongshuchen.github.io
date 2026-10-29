@@ -2,7 +2,7 @@
 layout: about
 title: about
 permalink: /
-subtitle: "PhD Student @ The University of Edinburgh" # TODO: one short line under your name, e.g. "PhD Student @ XXX University"
+subtitle: "PhD Student @ University of Edinburgh" # TODO: one short line under your name, e.g. "PhD Student @ XXX University"
 
 profile:
   align: right
