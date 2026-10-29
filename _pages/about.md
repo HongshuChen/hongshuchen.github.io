@@ -35,7 +35,11 @@ I am broadly interested in embodied AI, robot learning, robot foundation models,
 
 <!-- TODO paragraph 2: background (previous degrees, internships, collaborators). -->
 
-Previously, I received my [B.Eng. / M.S.] in [Major] from [\[University\]](#). I have also worked as a [research intern] at [\[Company / Lab\]](#), where I worked with [\[Mentor Name\]](#).
+I received both my B.Eng. and M.Eng. degrees from Northeastern University, China.
+  During my master's studies, I was a member of the
+  <a href="https://team.neu.edu.cn/MVR/" target="_blank" rel="noopener">Machine Vision and Robotics (MVR) Lab</a>,
+  supervised by
+  <a href="https://faculty.neu.edu.cn/songkechen/" target="_blank" rel="noopener">Assoc. Prof. Kechen Song</a>.
 
 <div class="research-note" markdown="1">
 
