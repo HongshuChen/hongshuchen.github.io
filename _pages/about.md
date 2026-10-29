@@ -40,6 +40,6 @@ During my master's studies, I was a member of the <a href="https://team.neu.edu.
 
 <div class="research-note" markdown="1">
 
-📢 I am open to research collaborations. If you are interested in working together, please feel free to reach out by email.
+📢 If you are interested in working together, please feel free to reach out by email.
 
 </div>
