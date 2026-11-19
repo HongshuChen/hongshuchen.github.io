@@ -18,9 +18,11 @@ papers:
     tags: [defect-detection, robotic-inspection]
   tan2026lightweight:
     tags: [defect-detection, robotic-inspection]
+    show_in_all: false
   chen2025two:
-    tags: [defect-detection]
+    tags: [defect-detection, robotic-inspection]
   chen2025srpcnet:
     tags: [defect-detection, robotic-inspection]
   cui2024efficient:
     tags: [defect-detection]
+    show_in_all: false
