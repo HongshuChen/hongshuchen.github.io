@@ -1,23 +1,26 @@
 # Topic filter buttons above "Selected Publications" on the homepage.
 # The first button, "Featured", is always there; add one entry per research topic.
 filters:
-  - id: topic-a
-    label: "[Topic A]"
-  - id: topic-b
-    label: "[Topic B]"
-  - id: topic-c
-    label: "[Topic C]"
+  - id: defect-detection
+    label: "Defect Detection"
+  - id: robotic-inspection
+    label: "Robotic Inspection"
+  - id: multimodal-perception
+    label: "Multimodal Perception"
 
 # Set selected={true} in _bibliography/papers.bib for every paper that should appear on the homepage,
 # then list it here by its BibTeX key. `tags` decides which filter buttons show it; add
 # `show_in_all: false` when it should appear only after choosing one of its topics, not under "Featured".
 papers:
-  placeholder-preprint:
-    tags: [topic-a]
-  placeholder-conference:
-    tags: [topic-a, topic-b]
-  placeholder-journal:
-    tags: [topic-b]
-  placeholder-workshop:
-    tags: [topic-c]
-    show_in_all: false
+  xue2026transfer:
+    tags: [multimodal-perception]
+  chen2026float:
+    tags: [defect-detection, robotic-inspection]
+  tan2026lightweight:
+    tags: [defect-detection, robotic-inspection]
+  chen2025two:
+    tags: [defect-detection]
+  chen2025srpcnet:
+    tags: [defect-detection, robotic-inspection]
+  cui2024efficient:
+    tags: [defect-detection]

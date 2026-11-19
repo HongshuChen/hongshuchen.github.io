@@ -11,7 +11,6 @@ journals: &journal
 robots: &robot
   color: "#00369f"
 
-"Journal": *journal # used by the placeholder paper in papers.bib; delete once it is replaced
 TPAMI: *journal
 IJCV: *journal
 TIP: *journal
@@ -20,6 +19,12 @@ JMLR: *journal
 NMI: *journal
 IJRR: *journal
 T-RO: *journal
+TII: *journal
+TMECH: *journal
+JSEN: *journal
+KBS: *journal
+EFA: *journal
+OLE: *journal
 
 RA-L: *robot
 RSS: *robot
