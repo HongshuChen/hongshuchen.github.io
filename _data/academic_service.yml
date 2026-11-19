@@ -2,4 +2,4 @@
 # Each item renders as "<role>: <venues joined by commas>".
 - role: Journal Reviewer
   venues:
-    - "IEEE Transactions on Industrial Informatics (TII)"
+    - "IEEE Transactions on Industrial Informatics (TII)."
