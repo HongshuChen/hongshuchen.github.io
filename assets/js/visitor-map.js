@@ -283,7 +283,8 @@
       .pointLng("lon")
       .pointColor(() => POINT_COLOR)
       .pointRadius((p) => 0.35 + 0.5 * Math.sqrt(p.count / maxCount))
-      .pointAltitude((p) => 0.015 + 0.09 * Math.sqrt(p.count / maxCount))
+      // Heights follow the logarithm of the visits, so 1,000 visits stand only four times as tall as one.
+      .pointAltitude((p) => Math.min(0.14, 0.02 + 0.02 * Math.log10(p.count)))
       .pointResolution(10)
       .pointsTransitionDuration(0)
       .pointLabel(pointLabel);

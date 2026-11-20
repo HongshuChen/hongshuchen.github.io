@@ -14,8 +14,8 @@ from PIL import Image, ImageDraw
 
 W, H = 2048, 1024  # output size
 SS = 2  # supersampling for smooth dots
-STEP = 1.55  # degrees between dots along a meridian
-RADIUS = 2.2  # dot radius in output pixels, at the equator
+STEP = 1.05  # degrees between dots along a meridian (about 6 output pixels)
+RADIUS = 1.6  # dot radius in output pixels, at the equator
 
 PALETTES = {
     # name: (ocean, land dot)
