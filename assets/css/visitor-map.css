@@ -11,6 +11,28 @@
   display: none !important;
 }
 
+.visitor-map-button {
+  background: transparent;
+  border: 1px solid var(--global-divider-color);
+  border-radius: 999px;
+  color: inherit;
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  padding: 0.5rem 1rem;
+}
+
+.visitor-map-button:hover {
+  border-color: var(--global-theme-color);
+  color: var(--global-theme-color);
+}
+
+.visitor-map-button:focus-visible {
+  outline: 2px solid var(--global-theme-color);
+  outline-offset: 4px;
+}
+
 .visitor-map-summary {
   font-size: 0.95rem;
   margin: 1.25rem 0 0;
