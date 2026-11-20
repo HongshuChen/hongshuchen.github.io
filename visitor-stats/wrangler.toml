@@ -2,7 +2,9 @@
 name = "visitor-stats"
 main = "src/index.js"
 compatibility_date = "2026-11-01"
-workers_dev = true
+workers_dev = true # https://visitor-stats.hongshuchen.workers.dev, the page's fallback address
+# The page's main address. Unlike *.workers.dev it can be reached from mainland China.
+routes = [{ pattern = "stats.hongshuchen.top", custom_domain = true }]
 
 [vars]
 # Pages allowed to record visits and read the statistics.

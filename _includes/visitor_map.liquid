@@ -1,13 +1,15 @@
 {% comment %}
   "🌍 Visitor Map" button above the footer (included from _includes/footer.liquid). It opens a spinning globe with a
   red point for every city visitors came from; the behaviour is in assets/js/visitor-map.js. Visits are counted by the
-  visitor-stats Cloudflare Worker in visitor-stats/ (see its README), whose address is visitor_map.api_url in _config.yml.
+  visitor-stats Cloudflare Worker in visitor-stats/ (see its README), whose address is visitor_map.api_url in _config.yml
+  (visitor_map.fallback_api_url is tried when that cannot be reached).
 {% endcomment %}
 <section
   id="visitor-map"
   class="visitor-map"
   aria-label="Visitor locations"
   data-api="{{ site.visitor_map.api_url }}"
+  data-api-fallback="{{ site.visitor_map.fallback_api_url }}"
   data-origins="{{ site.url }}"
   data-globe-script="{{ '/assets/visitor-map/globe.gl.min.js' | relative_url | bust_file_cache }}"
   data-texture-light="{{ '/assets/visitor-map/land-dots-light.png' | relative_url | bust_file_cache }}"

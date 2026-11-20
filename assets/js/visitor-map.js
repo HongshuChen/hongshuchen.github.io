@@ -51,14 +51,19 @@
     ],
   };
 
-  let api = null;
-  try {
-    api = new URL(root.dataset.api);
-  } catch {
-    api = null;
-  }
+  // The Worker's main address, then one to try when that cannot be reached (for instance while a visitor's DNS does not
+  // know the main address yet).
+  const apis = [root.dataset.api, root.dataset.apiFallback]
+    .map((address) => {
+      try {
+        return new URL(address);
+      } catch {
+        return null;
+      }
+    })
+    .filter((url) => url && url.protocol === "https:");
   const origins = (root.dataset.origins || "").split(/\s+/).filter(Boolean);
-  const live = Boolean(api) && api.protocol === "https:" && origins.includes(window.location.origin);
+  const live = apis.length > 0 && origins.includes(window.location.origin);
 
   let regionNames = null;
   try {
@@ -88,6 +93,20 @@
     }
   };
 
+  // Both addresses reach the same Worker, which ignores repeat visits, so trying the next one after a failure never counts a
+  // visit twice.
+  const fetchApi = async (path, options) => {
+    let failure;
+    for (const api of apis) {
+      try {
+        return await fetchWithTimeout(new URL(path, api), options);
+      } catch (error) {
+        failure = error;
+      }
+    }
+    throw failure;
+  };
+
   // Count this visit once per browser session (the Worker also ignores repeats from the same visitor within 30 minutes).
   const recordVisit = () => {
     if (!live) return;
@@ -105,7 +124,7 @@
     } catch {
       referrer = "";
     }
-    fetchWithTimeout(new URL("/collect", api), {
+    fetchApi("/collect", {
       method: "POST",
       // A text/plain body keeps this a simple cross-origin request, so the browser sends no preflight.
       headers: { "Content-Type": "text/plain;charset=UTF-8" },
@@ -143,7 +162,7 @@
   let stats = null;
   const loadStats = async () => {
     if (stats) return stats;
-    const data = live ? await (await fetchWithTimeout(new URL("/stats", api))).json() : SAMPLE;
+    const data = live ? await (await fetchApi("/stats")).json() : SAMPLE;
     stats = cleanStats(data);
     return stats;
   };

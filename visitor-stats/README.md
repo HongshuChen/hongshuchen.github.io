@@ -23,15 +23,13 @@ npx wrangler deploy
 
 Then set `visitor_map.api_url` in `_config.yml` to the Worker's address. The button only appears once it is set.
 
-## Custom domain
+## Addresses
 
-While hongshuchen.top's DNS is on Cloudflare, the Worker can answer at `stats.hongshuchen.top`, which (unlike `*.workers.dev`)
-is reachable from mainland China. Add this to `wrangler.toml`, run `npx wrangler deploy`, and use the new address as
-`visitor_map.api_url`:
-
-```toml
-routes = [{ pattern = "stats.hongshuchen.top", custom_domain = true }]
-```
+The page uses the Worker's custom domain `https://stats.hongshuchen.top` (the `routes` line in `wrangler.toml`, which needs
+hongshuchen.top's DNS on Cloudflare). Unlike `*.workers.dev`, it can be reached from mainland China. It is
+`visitor_map.api_url` in `_config.yml`. The Worker also stays on `https://visitor-stats.hongshuchen.workers.dev`, which is
+`visitor_map.fallback_api_url`. The page tries that address when the custom domain cannot be reached, for instance while a
+visitor's DNS still has the domain's old records.
 
 ## Tests
 
