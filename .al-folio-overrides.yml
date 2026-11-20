@@ -50,3 +50,10 @@ overrides:
     upstream_sha256: b581e43dcfbf21c14f388e2b585474c886fad62f6b5a0444f7832e7f69745f1f
     local_sha256: 95b97cbd67dcbb7cc791a471e9242d09fe7c384c94a38c1d5545c6dfc0910edb
     acknowledged_at: "2026-11-20"
+  assets/js/theme.js:
+    owner: al_folio_core
+    gem_version: 1.0.15
+    upstream_path: assets/js/theme.js
+    upstream_sha256: a1a07af6a468a10fc06ff3cf71d30b1b38ae8dc81674e8448c978080bbb78b81
+    local_sha256: 60c8e45738c6a989c93f22cdd429fb038f699e096b57c1a77d33b6da4e83be0e
+    acknowledged_at: "2026-11-20"
