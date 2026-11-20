@@ -11,7 +11,7 @@ ALLOWED_ORIGINS = "https://hongshuchen.top,https://www.hongshuchen.top"
 [[d1_databases]]
 binding = "DB"
 database_name = "visitor-stats"
-database_id = "00000000-0000-0000-0000-000000000000" # replaced by the ID from `npx wrangler d1 create visitor-stats`
+database_id = "3429b5fb-edf8-4544-9e31-afeaf38566a7"
 
 [observability]
 enabled = true

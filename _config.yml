@@ -132,7 +132,7 @@ enable_simple_analytics: false # Simple Analytics identifies a site by its domai
 # api_url is the address of the visitor-stats Cloudflare Worker in visitor-stats/ (see its README).
 visitor_map:
   enabled: true # set to false to remove the button
-  api_url: # e.g. https://stats.hongshuchen.top
+  api_url: https://visitor-stats.hongshuchen.workers.dev # becomes https://stats.hongshuchen.top once the domain is on Cloudflare
 
 # For Google Search Console, see https://support.google.com/webmasters/answer/9008080?hl=en#meta_tag_verification&zippy=%2Chtml-tag
 google_site_verification: # your google-site-verification ID (Google Search Console)
