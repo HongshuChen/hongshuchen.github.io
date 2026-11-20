@@ -252,7 +252,6 @@
   };
 
   let globe = null;
-  let maxCount = 1;
 
   const pointLabel = (p) => {
     const country = countryName(p.country);
@@ -292,7 +291,6 @@
   };
 
   const createGlobe = (points) => {
-    maxCount = Math.max(1, ...points.map((p) => p.count));
     globe = new window.Globe(globeBox, { animateIn: !reduceMotion.matches, rendererConfig: { antialias: true, alpha: true } })
       .backgroundColor("rgba(0,0,0,0)")
       .showGraticules(true)
@@ -302,7 +300,8 @@
       .pointLat("lat")
       .pointLng("lon")
       .pointColor(() => POINT_COLOR)
-      .pointRadius((p) => 0.35 + 0.5 * Math.sqrt(p.count / maxCount))
+      // As thin as a land dot (0.28 degrees), so that bars of nearby cities stand apart; only the height shows the visits.
+      .pointRadius(0.28)
       // Heights follow the logarithm of the visits, so 1,000 visits stand only four times as tall as one.
       .pointAltitude((p) => Math.min(0.14, 0.02 + 0.02 * Math.log10(p.count)))
       .pointResolution(10)
