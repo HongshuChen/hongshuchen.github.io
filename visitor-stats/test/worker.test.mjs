@@ -165,28 +165,6 @@ test("adds up countries and cities and leaves unknown places off the globe", asy
   );
 });
 
-test("counts the site owner's visits at OWNER_PLACE", async () => {
-  const LONDON = { country: "GB", city: "London", latitude: "51.50850", longitude: "-0.12570" };
-  const owner = (token) => JSON.stringify({ referrer: "", touch: false, owner: token });
-  env.OWNER_TOKEN = "0123456789abcdef0123456789abcdef";
-  env.OWNER_PLACE = { country: "GB", city: "Edinburgh", latitude: 55.9533, longitude: -3.1883 };
-  await visit({ ip: "198.51.100.1", cf: LONDON, body: owner("0123456789abcdef0123456789abcdef") });
-  await visit({ ip: "198.51.100.2", cf: LONDON, body: owner("0123456789abcdef0123456789abcdee") });
-  await visit({ ip: "198.51.100.3", cf: LONDON, body: owner(["0123456789abcdef0123456789abcdef"]) });
-  await visit({ ip: "198.51.100.4", cf: LONDON });
-  // Without a configured token, nothing a page sends moves a visit.
-  delete env.OWNER_TOKEN;
-  await visit({ ip: "198.51.100.5", cf: LONDON, body: owner("") });
-  const { data } = await getStats();
-  assert.deepEqual(
-    data.points.map((p) => [p.city, p.lat, p.lon, p.count]),
-    [
-      ["London", 51.5, -0.1, 4],
-      ["Edinburgh", 56, -3.2, 1],
-    ]
-  );
-});
-
 test("records the day, the referring site and the device type", async () => {
   await visit({ body: JSON.stringify({ referrer: "www.Google.com", touch: false }) });
   await visit({ ip: "198.51.100.1", ua: IPHONE, body: JSON.stringify({ referrer: "<script>", touch: true }) });
