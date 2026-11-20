@@ -9,6 +9,8 @@ routes = [{ pattern = "stats.hongshuchen.top", custom_domain = true }]
 [vars]
 # Pages allowed to record visits and read the statistics.
 ALLOWED_ORIGINS = "https://hongshuchen.top,https://www.hongshuchen.top"
+# Where the site owner's own visits are counted: those that come with the OWNER_TOKEN secret (see README.md).
+OWNER_PLACE = { country = "GB", city = "Edinburgh", latitude = 55.9533, longitude = -3.1883 }
 
 [[d1_databases]]
 binding = "DB"

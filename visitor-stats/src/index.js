@@ -3,6 +3,8 @@
 //   GET  /stats    visits by country and city, for the globe
 // Visitors are located with Cloudflare's IP geolocation (request.cf). IP addresses are never stored: a repeat visit within
 // 30 minutes is recognised by a salted hash of IP address, browser and day (see the `recent` table in schema.sql).
+// The site owner's own browsers send the OWNER_TOKEN secret and are counted at OWNER_PLACE instead, because IP geolocation
+// often puts a home connection in the wrong city (see README.md).
 
 const REPEAT_WINDOW_MS = 30 * 60 * 1000;
 const DAY_MS = 24 * 60 * 60 * 1000;
@@ -74,7 +76,7 @@ async function collect(request, env) {
   if (seen !== null && seen !== undefined && now - seen < REPEAT_WINDOW_MS) return;
 
   const body = await readBody(request);
-  const cf = request.cf || {};
+  const cf = (await ownerPlace(body, env)) || request.cf || {};
   const country = /^[A-Z]{2}$/.test(cf.country || "") && cf.country !== "XX" && cf.country !== "T1" ? cf.country : "XX";
   const city = typeof cf.city === "string" ? cf.city.trim().slice(0, 100) : "";
   const lat = coordinate(cf.latitude, 90);
@@ -133,6 +135,15 @@ async function readBody(request) {
   } catch {
     return {};
   }
+}
+
+// OWNER_PLACE (in wrangler.toml, shaped like request.cf) when the visit comes with the OWNER_TOKEN secret. The token is
+// compared by digest, so the time taken says nothing about how much of it matched.
+async function ownerPlace(body, env) {
+  const place = env.OWNER_PLACE;
+  if (!env.OWNER_TOKEN || typeof body.owner !== "string" || !place || typeof place !== "object") return null;
+  const [given, expected] = await Promise.all([sha256(body.owner), sha256(env.OWNER_TOKEN)]);
+  return given === expected ? place : null;
 }
 
 // Rounded to 0.1 degree (about 10 km): enough to place a city on the globe.

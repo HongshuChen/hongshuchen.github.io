@@ -107,6 +107,24 @@
     throw failure;
   };
 
+  // The site owner marks each of their browsers once by opening the page as /#owner=<the Worker's OWNER_TOKEN secret>; the
+  // Worker then counts their visits in their home city instead of wherever their IP address points (see
+  // visitor-stats/README.md). #owner=off removes the mark.
+  const OWNER_KEY = "visitor-map:owner";
+  const ownerToken = (() => {
+    try {
+      const match = /^#owner=([\w-]{1,100})$/.exec(window.location.hash);
+      if (match) {
+        if (match[1] === "off") window.localStorage.removeItem(OWNER_KEY);
+        else window.localStorage.setItem(OWNER_KEY, match[1]);
+        window.history.replaceState(window.history.state, "", window.location.pathname + window.location.search);
+      }
+      return window.localStorage.getItem(OWNER_KEY) || "";
+    } catch {
+      return "";
+    }
+  })();
+
   // Count this visit once per browser session (the Worker also ignores repeats from the same visitor within 30 minutes).
   const recordVisit = () => {
     if (!live) return;
@@ -124,11 +142,13 @@
     } catch {
       referrer = "";
     }
+    const visit = { referrer, touch: navigator.maxTouchPoints > 0 };
+    if (ownerToken) visit.owner = ownerToken;
     fetchApi("/collect", {
       method: "POST",
       // A text/plain body keeps this a simple cross-origin request, so the browser sends no preflight.
       headers: { "Content-Type": "text/plain;charset=UTF-8" },
-      body: JSON.stringify({ referrer, touch: navigator.maxTouchPoints > 0 }),
+      body: JSON.stringify(visit),
       keepalive: true,
     }).catch(() => {
       try {

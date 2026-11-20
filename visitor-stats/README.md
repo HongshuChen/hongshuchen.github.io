@@ -31,6 +31,19 @@ hongshuchen.top's DNS on Cloudflare). Unlike `*.workers.dev`, it can be reached 
 `visitor_map.fallback_api_url`. The page tries that address when the custom domain cannot be reached, for instance while a
 visitor's DNS still has the domain's old records.
 
+## Your own visits
+
+IP geolocation often puts a home connection in the wrong city, so the site owner's browsers can be marked and their
+visits counted at `OWNER_PLACE` in `wrangler.toml` (Edinburgh) instead. The mark is the `OWNER_TOKEN` secret:
+
+```sh
+openssl rand -hex 16 | tee /dev/stderr | npx wrangler secret put OWNER_TOKEN   # prints the token once
+```
+
+Open `https://hongshuchen.top/#owner=<token>` once in each of your browsers. The page keeps the token in that browser,
+removes it from the address bar and sends it with each visit; a visit with the wrong token or none is located as usual.
+`https://hongshuchen.top/#owner=off` removes the mark. Setting a new token unmarks every browser.
+
 ## Tests
 
 ```sh
