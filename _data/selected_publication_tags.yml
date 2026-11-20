@@ -14,14 +14,14 @@ filters:
 papers:
   xue2026transfer:
     tags: [multimodal-perception]
-  chen2026float:
-    tags: [defect-detection, robotic-inspection]
-  tan2026lightweight:
+  tan2025lightweight:
     tags: [defect-detection, robotic-inspection]
     show_in_all: false
+  chen2025float:
+    tags: [defect-detection, robotic-inspection]
   chen2025two:
     tags: [defect-detection, robotic-inspection]
-  chen2025srpcnet:
+  chen2024srpcnet:
     tags: [defect-detection, robotic-inspection]
   cui2024efficient:
     tags: [defect-detection]
