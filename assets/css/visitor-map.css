@@ -1,0 +1,88 @@
+/* "🌍 Visitor Map" above the footer (_includes/visitor_map.liquid, assets/js/visitor-map.js). */
+.visitor-map {
+  color: var(--global-text-color);
+  margin: 2.5rem auto 0;
+  max-width: 440px;
+  padding: 0 1rem;
+  text-align: center;
+}
+
+.visitor-map [hidden] {
+  display: none !important;
+}
+
+.visitor-map-button {
+  background: transparent;
+  border: 1px solid var(--global-divider-color);
+  border-radius: 999px;
+  color: inherit;
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  padding: 0.5rem 1rem;
+}
+
+.visitor-map-button:hover {
+  border-color: var(--global-theme-color);
+  color: var(--global-theme-color);
+}
+
+.visitor-map-button:focus-visible {
+  outline: 2px solid var(--global-theme-color);
+  outline-offset: 4px;
+}
+
+.visitor-map-summary {
+  font-size: 0.95rem;
+  margin: 1.25rem 0 0;
+  min-height: 1.5em;
+}
+
+.visitor-map-summary strong {
+  color: var(--global-theme-color);
+  font-weight: 700;
+}
+
+.visitor-map-note {
+  color: var(--global-text-color-light);
+  font-size: 0.8rem;
+  margin: 0.5rem 0 0;
+}
+
+.visitor-map-globe {
+  aspect-ratio: 1;
+  margin: 0.25rem auto 0;
+  max-width: 280px;
+  width: 100%;
+}
+
+.visitor-map-globe canvas {
+  display: block;
+  max-width: 100%;
+}
+
+/* globe.gl's hover tooltip wraps the label below; let the label carry the look, and keep it above the globe's canvas. */
+.visitor-map-globe .float-tooltip-kap {
+  background: none;
+  font: inherit;
+  max-width: none;
+  padding: 0;
+  z-index: 1;
+}
+
+.visitor-map-label {
+  background: var(--global-bg-color);
+  border: 1px solid var(--global-divider-color);
+  border-radius: 6px;
+  color: var(--global-text-color);
+  display: inline-block;
+  font-size: 13px;
+  line-height: 1.5;
+  padding: 0.35rem 0.6rem;
+  white-space: nowrap;
+}
+
+.visitor-map-retry {
+  margin-top: 0.5rem;
+}

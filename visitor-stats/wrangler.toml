@@ -1,0 +1,17 @@
+# Cloudflare Worker behind the homepage's "🌍 Visitor Map". See README.md for setup and deployment.
+name = "visitor-stats"
+main = "src/index.js"
+compatibility_date = "2026-11-01"
+workers_dev = true
+
+[vars]
+# Pages allowed to record visits and read the statistics.
+ALLOWED_ORIGINS = "https://hongshuchen.top,https://www.hongshuchen.top"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "visitor-stats"
+database_id = "00000000-0000-0000-0000-000000000000" # replaced by the ID from `npx wrangler d1 create visitor-stats`
+
+[observability]
+enabled = true

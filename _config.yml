@@ -128,11 +128,11 @@ analytics:
   cloudflare: # your Cloudflare Web Analytics beacon token (32 hex characters)
 enable_simple_analytics: false # Simple Analytics identifies a site by its domain, so it has no ID to set above
 
-# "🌍 Visitor Map" button above the footer (see _includes/visitor_map.liquid), shown once an ID is set.
-# Register your site at https://mapmyvisitors.com and paste the value after `d=` from its embed code.
+# "🌍 Visitor Map" button above the footer (see _includes/visitor_map.liquid), shown once api_url is set.
+# api_url is the address of the visitor-stats Cloudflare Worker in visitor-stats/ (see its README).
 visitor_map:
   enabled: true # set to false to remove the button
-  mapmyvisitors_id: # TODO: your MapMyVisitors widget ID
+  api_url: # e.g. https://stats.hongshuchen.top
 
 # For Google Search Console, see https://support.google.com/webmasters/answer/9008080?hl=en#meta_tag_verification&zippy=%2Chtml-tag
 google_site_verification: # your google-site-verification ID (Google Search Console)
@@ -266,6 +266,7 @@ exclude:
   - gems/
   - migrations/
   - vendor
+  - visitor-stats/
 keep_files:
   - CNAME
   - .nojekyll
