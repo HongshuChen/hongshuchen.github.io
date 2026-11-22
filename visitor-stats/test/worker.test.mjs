@@ -60,9 +60,20 @@ function fakeD1() {
 }
 
 let env;
+// Requests the Worker made to other sites: none are expected, since the page does the ipwho.is lookup.
+let outgoing;
 beforeEach(() => {
   env = { DB: fakeD1(), ALLOWED_ORIGINS: `${SITE},https://www.hongshuchen.top`, IP_SALT: "test-salt" };
+  outgoing = [];
+  globalThis.fetch = async (url) => {
+    outgoing.push(String(url));
+    throw new TypeError("No network in tests");
+  };
 });
+
+// The body the page sends after looking up its IPv4 address at ipwho.is.
+const located = (ipv4, { country = "GB", city = "Edinburgh", lat = 55.953252, lon = -3.188267, asn = 786 } = {}) =>
+  JSON.stringify({ referrer: "", touch: false, ipv4, place: { country, city, lat, lon, asn } });
 
 function request(path, { method = "GET", origin = SITE, ip = "203.0.113.7", ua = CHROME, cf = EDINBURGH, body } = {}) {
   const headers = new Headers({ "CF-Connecting-IP": ip });
@@ -163,6 +174,52 @@ test("adds up countries and cities and leaves unknown places off the globe", asy
       ["Edinburgh", 1],
     ]
   );
+});
+
+test("uses the city the page found with ipwho.is for the address the request came from", async () => {
+  const LONDON = { country: "GB", city: "London", latitude: "51.50853", longitude: "-0.12574" };
+  await visit({ ip: "203.0.113.7", cf: LONDON, body: located("203.0.113.7") });
+  assert.deepEqual((await getStats()).data.points, [{ country: "GB", city: "Edinburgh", lat: 56, lon: -3.2, count: 1 }]);
+  assert.deepEqual(outgoing, []);
+});
+
+test("uses the page's city for a request over IPv6, whose address the page cannot have looked up", async () => {
+  const BEIJING = { country: "CN", city: "Beijing", latitude: "39.9", longitude: "116.4" };
+  const body = located("198.51.100.9", { country: "CN", city: "Shenyang", lat: 41.8057, lon: 123.4315, asn: 4837 });
+  await visit({ ip: "2001:db8::1", cf: BEIJING, body });
+  assert.deepEqual((await getStats()).data.points, [{ country: "CN", city: "Shenyang", lat: 41.8, lon: 123.4, count: 1 }]);
+});
+
+test("falls back to Cloudflare's location when the page's city cannot be trusted", async () => {
+  const bodies = [
+    located("198.51.100.99", { country: "CN", city: "Shanghai", lat: 31.2, lon: 121.5 }), // another address than the request's
+    located("198.51.100.2", { country: "US", city: "Dallas", lat: 32.8, lon: -96.8 }), // another country than Cloudflare's
+    located("198.51.100.3", { country: "CN", city: "", lat: 31.2, lon: 121.5 }), // no city
+    located("198.51.100.4", { country: "CN", city: "Shanghai", lat: "31.2", lon: 121.5 }), // not a number
+    located("198.51.100.5", { country: "CN", city: "Shanghai", lat: 31.2, lon: 121.5, asn: 16509 }), // a cloud server
+    JSON.stringify({ referrer: "", touch: false, ipv4: "198.51.100.6", place: "Shanghai" }),
+    JSON.stringify({ referrer: "", touch: false, ipv4: "", place: null }), // ipify or ipwho.is failed
+    JSON.stringify({ referrer: "", touch: false }),
+  ];
+  for (const [i, body] of bodies.entries()) await visit({ ip: `198.51.100.${i + 1}`, cf: SHENYANG, body });
+  assert.deepEqual((await getStats()).data.points, [{ country: "CN", city: "Shenyang", lat: 41.8, lon: 123.4, count: bodies.length }]);
+  // Tor: neither the page's nor Cloudflare's place.
+  await visit({ ip: "198.51.100.50", cf: { country: "T1" }, body: located("198.51.100.50") });
+  const { data } = await getStats();
+  assert.equal(data.total, bodies.length + 1);
+  assert.equal(data.points.length, 1);
+});
+
+test("does not count visits from cloud and hosting networks", async () => {
+  await visit({ ip: "198.51.100.1", cf: { ...EDINBURGH, asn: 16509 } }); // Amazon Web Services
+  await visit({ ip: "198.51.100.2", cf: { ...EDINBURGH, asn: 396982 } }); // Google Cloud
+  await visit({ ip: "198.51.100.3", cf: { ...EDINBURGH, asn: 14061 } }); // DigitalOcean
+  assert.equal((await getStats()).data.total, 0);
+  // Home, mobile and university networks are counted, and so is iCloud Private Relay.
+  await visit({ ip: "198.51.100.4", cf: { ...EDINBURGH, asn: 25135 } }); // Vodafone UK
+  await visit({ ip: "198.51.100.5", cf: { ...EDINBURGH, asn: 786 } }); // Jisc (UK universities)
+  await visit({ ip: "198.51.100.6", cf: { ...EDINBURGH, asn: 36183 } }); // Akamai, for iCloud Private Relay
+  assert.equal((await getStats()).data.total, 3);
 });
 
 test("records the day, the referring site and the device type", async () => {

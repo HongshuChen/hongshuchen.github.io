@@ -7,8 +7,22 @@ A Cloudflare Worker that counts visits to the homepage and serves the numbers be
   within 30 minutes is ignored.
 - `GET /stats` returns the visits by country and city that the globe shows.
 
-Visitors are located with Cloudflare's IP geolocation. IP addresses are never stored (see `schema.sql`). Besides the
-places, the Worker keeps visits per day, per referring site and per device type for a possible statistics page later.
+Locating a visit: the page finds its public IPv4 address with `api.ipify.org` (which only answers over IPv4), looks up that
+address's city at [ipwho.is](https://ipwho.is) and sends both with the visit. IP databases know the cities of IPv4
+addresses far better than those of IPv6 ones, which matters for the many visitors (most in China) whose browsers reach the
+Worker over IPv6. The lookup runs in the browser because ipwho.is's free tier (no key) allows 1,000 lookups a day per
+address: plenty for one visitor, while requests from Workers all come from Cloudflare's shared addresses and are refused
+with HTTP 429. The Worker uses the page's city when it agrees with Cloudflare about the country and belongs to the address
+the request came from (requests over IPv6 cannot be compared); otherwise, and whenever a lookup fails or takes more than
+1.8 seconds, it uses Cloudflare's own IP geolocation. IP geolocation stays approximate: home and mobile connections are
+often placed in a capital or a large city (many in the UK in London), and a VPN shows up where its server is.
+
+Visits from cloud and hosting networks (Amazon, Google Cloud, Azure, DigitalOcean and the others in `HOSTING_ASNS` in
+`src/index.js`) are not counted: they come from crawlers that run scripts like a browser, link checkers of mail and chat
+apps, and VPN servers.
+
+IP addresses are never stored (see `schema.sql`). Besides the places, the Worker keeps visits per day, per referring site and
+per device type for a possible statistics page later.
 
 ## First deployment
 

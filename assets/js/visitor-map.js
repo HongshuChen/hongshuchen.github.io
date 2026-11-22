@@ -1,7 +1,8 @@
 // "🌍 Visitor Map" above the footer: a button that opens a spinning globe with a red point for every city visitors came from.
-// The page reports one visit per browser session to the visitor-stats Worker (visitor-stats/ in this repository), which
-// locates it by IP address and returns the totals from /stats. Away from the live site (e.g. a local preview) the map shows
-// sample data and nothing is recorded.
+// The page reports one visit per browser session to the visitor-stats Worker (visitor-stats/ in this repository), together
+// with the city of its public IPv4 address (api.ipify.org, then ipwho.is). The Worker settles where the visit came from and
+// returns the totals from /stats. Away from the live site (e.g. a local preview) the map shows sample data and nothing is
+// recorded.
 (() => {
   const root = document.getElementById("visitor-map");
   if (!root || root.dataset.initialized) return;
@@ -107,16 +108,36 @@
     throw failure;
   };
 
+  // Where this browser is: its public IPv4 address from api.ipify.org (which only answers over IPv4), then that address's
+  // city from ipwho.is. IP databases know the cities of IPv4 addresses far better than those of IPv6 ones, over which many
+  // visitors reach the Worker. The Worker checks the result and otherwise uses Cloudflare's location. Null when either
+  // lookup fails or takes longer than 1.8 seconds.
+  const findPlace = async () => {
+    try {
+      const { ip } = await (await fetchWithTimeout("https://api.ipify.org?format=json", { cache: "no-store" }, 1800)).json();
+      if (typeof ip !== "string" || !/^(\d{1,3}\.){3}\d{1,3}$/.test(ip)) return null;
+      const lookup = `https://ipwho.is/${ip}?fields=success,ip,country_code,city,latitude,longitude,connection`;
+      const data = await (await fetchWithTimeout(lookup, { cache: "no-store" }, 1800)).json();
+      if (!data || data.success !== true || data.ip !== ip) return null;
+      const asn = data.connection ? data.connection.asn : null;
+      return { ipv4: ip, place: { country: data.country_code, city: data.city, lat: data.latitude, lon: data.longitude, asn } };
+    } catch {
+      return null;
+    }
+  };
+
   // Count this visit once per browser session (the Worker also ignores repeats from the same visitor within 30 minutes).
-  const recordVisit = () => {
-    if (!live) return;
+  // The session is only marked once the Worker has the visit, so a page left before that leaves the next one to try again.
+  let recording = false;
+  const recordVisit = async () => {
+    if (!live || recording) return;
     const key = "visitor-map:recorded";
     try {
       if (window.sessionStorage.getItem(key)) return;
-      window.sessionStorage.setItem(key, "1");
     } catch {
       return;
     }
+    recording = true;
     let referrer = "";
     try {
       const from = new URL(document.referrer);
@@ -124,19 +145,19 @@
     } catch {
       referrer = "";
     }
-    fetchApi("/collect", {
-      method: "POST",
-      // A text/plain body keeps this a simple cross-origin request, so the browser sends no preflight.
-      headers: { "Content-Type": "text/plain;charset=UTF-8" },
-      body: JSON.stringify({ referrer, touch: navigator.maxTouchPoints > 0 }),
-      keepalive: true,
-    }).catch(() => {
-      try {
-        window.sessionStorage.removeItem(key);
-      } catch {
-        // Nothing to undo.
-      }
-    });
+    try {
+      const found = await findPlace();
+      await fetchApi("/collect", {
+        method: "POST",
+        // A text/plain body keeps this a simple cross-origin request, so the browser sends no preflight.
+        headers: { "Content-Type": "text/plain;charset=UTF-8" },
+        body: JSON.stringify({ referrer, touch: navigator.maxTouchPoints > 0, ipv4: found ? found.ipv4 : "", place: found ? found.place : null }),
+        keepalive: true,
+      });
+      window.sessionStorage.setItem(key, "1");
+    } catch {
+      // Not recorded; the next page of this session tries again.
+    }
   };
 
   const isCount = (value) => Number.isSafeInteger(value) && value >= 0;
